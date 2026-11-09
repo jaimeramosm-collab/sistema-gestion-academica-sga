@@ -1,0 +1,31 @@
+digraph ER {
+  rankdir=LR; dpi=200; bgcolor=white; nodesep=0.12; ranksep=1.25; splines=true;
+  node [shape=plain, fontname="Liberation Sans", fontsize=11];
+  edge [fontname="Liberation Sans", fontsize=10, dir=both, arrowsize=0.8, color="#404040"];
+  USUARIO [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="3"><tr><td bgcolor="#2F5597"><font color="white"><b>USUARIO</b></font></td></tr><tr><td align="left">id (PK)<br align="left"/>correo (UK)<br align="left"/>clave_hash<br align="left"/>activo<br align="left"/></td></tr></table>>];
+  ROL [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="3"><tr><td bgcolor="#2F5597"><font color="white"><b>ROL</b></font></td></tr><tr><td align="left">id (PK)<br align="left"/>nombre (UK)<br align="left"/></td></tr></table>>];
+  UR [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="3"><tr><td bgcolor="#8EA9DB"><b>USUARIO_ROL</b></td></tr><tr><td align="left">usuario_id (PK, FK)<br align="left"/>rol_id (PK, FK)<br align="left"/></td></tr></table>>];
+  ESTUDIANTE [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="3"><tr><td bgcolor="#2F5597"><font color="white"><b>ESTUDIANTE</b></font></td></tr><tr><td align="left">id (PK)<br align="left"/>usuario_id (FK, UK)<br align="left"/>programa_id (FK)<br align="left"/>codigo (UK)<br align="left"/>nombres, apellidos<br align="left"/>estado<br align="left"/></td></tr></table>>];
+  DOCENTE [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="3"><tr><td bgcolor="#2F5597"><font color="white"><b>DOCENTE</b></font></td></tr><tr><td align="left">id (PK)<br align="left"/>usuario_id (FK, UK)<br align="left"/>codigo (UK)<br align="left"/>nombres, apellidos<br align="left"/>estado<br align="left"/></td></tr></table>>];
+  AUDITORIA [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="3"><tr><td bgcolor="#2F5597"><font color="white"><b>AUDITORIA</b></font></td></tr><tr><td align="left">id (PK)<br align="left"/>usuario_id (FK)<br align="left"/>accion<br align="left"/>entidad_afectada<br align="left"/>registro_id<br align="left"/>valor_previo, valor_nuevo<br align="left"/>fecha_evento<br align="left"/></td></tr></table>>];
+  PROGRAMA [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="3"><tr><td bgcolor="#2F5597"><font color="white"><b>PROGRAMA</b></font></td></tr><tr><td align="left">id (PK)<br align="left"/>codigo (UK)<br align="left"/>nombre<br align="left"/>creditos_totales<br align="left"/></td></tr></table>>];
+  ASIGNATURA [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="3"><tr><td bgcolor="#2F5597"><font color="white"><b>ASIGNATURA</b></font></td></tr><tr><td align="left">id (PK)<br align="left"/>programa_id (FK)<br align="left"/>codigo (UK)<br align="left"/>nombre<br align="left"/>creditos<br align="left"/>semestre_nivel<br align="left"/></td></tr></table>>];
+  PERIODO [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="3"><tr><td bgcolor="#2F5597"><font color="white"><b>PERIODO_ACADEMICO</b></font></td></tr><tr><td align="left">id (PK)<br align="left"/>codigo (UK)<br align="left"/>fecha_inicio, fecha_fin<br align="left"/>matricula_abierta<br align="left"/></td></tr></table>>];
+  GRUPO [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="3"><tr><td bgcolor="#2F5597"><font color="white"><b>GRUPO</b></font></td></tr><tr><td align="left">id (PK)<br align="left"/>asignatura_id (FK)<br align="left"/>periodo_id (FK)<br align="left"/>docente_id (FK)<br align="left"/>codigo_grupo<br align="left"/>cupo_maximo, cupo_actual<br align="left"/>horario<br align="left"/>aula_o_enlace<br align="left"/></td></tr></table>>];
+  MATRICULA [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="3"><tr><td bgcolor="#2F5597"><font color="white"><b>MATRICULA</b></font></td></tr><tr><td align="left">id (PK)<br align="left"/>estudiante_id (FK)<br align="left"/>grupo_id (FK)<br align="left"/>periodo_id (FK)<br align="left"/>asignatura_id (FK)<br align="left"/>fecha_registro<br align="left"/>estado<br align="left"/></td></tr></table>>];
+  CALIFICACION [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="3"><tr><td bgcolor="#2F5597"><font color="white"><b>CALIFICACION</b></font></td></tr><tr><td align="left">id (PK)<br align="left"/>matricula_id (FK)<br align="left"/>evaluacion<br align="left"/>porcentaje, valor<br align="left"/>publicada<br align="left"/>fecha_registro<br align="left"/></td></tr></table>>];
+
+  USUARIO -> UR [arrowtail=teetee, arrowhead=crowodot, taillabel="1", headlabel="N"];
+  ROL -> UR [arrowtail=teetee, arrowhead=crowodot, taillabel="1", headlabel="N"];
+  USUARIO -> ESTUDIANTE [arrowtail=teetee, arrowhead=teeodot, taillabel="1", headlabel="0..1"];
+  USUARIO -> DOCENTE [arrowtail=teetee, arrowhead=teeodot, taillabel="1", headlabel="0..1"];
+  USUARIO -> AUDITORIA [arrowtail=teetee, arrowhead=crowodot, taillabel="1", headlabel="N"];
+  PROGRAMA -> ASIGNATURA [arrowtail=teetee, arrowhead=crowodot, taillabel="1", headlabel="N"];
+  PROGRAMA -> ESTUDIANTE [arrowtail=teetee, arrowhead=crowodot, taillabel="1", headlabel="N"];
+  ASIGNATURA -> GRUPO [arrowtail=teetee, arrowhead=crowodot, taillabel="1", headlabel="N"];
+  PERIODO -> GRUPO [arrowtail=teetee, arrowhead=crowodot, taillabel="1", headlabel="N"];
+  DOCENTE -> GRUPO [arrowtail=teetee, arrowhead=crowodot, taillabel="1", headlabel="N"];
+  ESTUDIANTE -> MATRICULA [arrowtail=teetee, arrowhead=crowodot, taillabel="1", headlabel="N"];
+  GRUPO -> MATRICULA [arrowtail=teetee, arrowhead=crowodot, taillabel="1", headlabel="N"];
+  MATRICULA -> CALIFICACION [arrowtail=teetee, arrowhead=crowodot, taillabel="1", headlabel="N"];
+}

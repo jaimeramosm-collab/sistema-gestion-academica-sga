@@ -1,0 +1,33 @@
+digraph UC {
+  rankdir=LR; splines=true; nodesep=0.28; ranksep=2.2; dpi=200; bgcolor=white;
+  node [fontname="Liberation Sans", fontsize=13];
+  edge [dir=none, color="#404040", arrowsize=0.6];
+  subgraph cluster_sga {
+    label="Sistema de Gestión Académica (SGA)"; fontname="Liberation Sans Bold"; fontsize=15;
+    style="rounded"; color="#2F5597"; margin=18;
+    node [shape=ellipse, style=filled, fillcolor="#E8F0FA", color="#2F5597", width=3.4, height=0.55];
+    UC1 [label="CU-01 Autenticarse"];
+    UC2 [label="CU-02 Gestionar usuarios y roles"];
+    UC3 [label="CU-03 Gestionar estudiantes y docentes"];
+    UC4 [label="CU-04 Gestionar programas y asignaturas"];
+    UC5 [label="CU-05 Configurar periodos, grupos y horarios"];
+    UC6 [label="CU-06 Matricular estudiante"];
+    UC7 [label="CU-07 Registrar y actualizar calificaciones"];
+    UC8 [label="CU-08 Consultar horarios y calificaciones"];
+    UC9 [label="CU-09 Generar reportes"];
+    UC10 [label="CU-10 Buscar y filtrar registros"];
+    UC11 [label="CU-11 Consultar bitácora de auditoría"];
+    {rank=same; UC1;UC2;UC3;UC4;UC5;UC6;UC7;UC8;UC9;UC10;UC11}
+    UC11->UC10->UC9->UC8->UC7->UC6->UC5->UC4->UC3->UC2->UC1 [style=invis];
+  }
+  node [shape=box, style="filled", fillcolor="#FFF2CC", color="#BF9000", width=2.0, height=0.7, fontsize=14];
+  A [label="Administrador"]; C [label="Coordinador\nacadémico"];
+  D [label="Docente"]; E [label="Estudiante"];
+  A->UC1; A->UC2; A->UC3; A->UC10; A->UC11;
+  C->UC1; C->UC3; C->UC4; C->UC5; C->UC6; C->UC9; C->UC10;
+  UC1->D; UC7->D; UC9->D; UC10->D;
+  UC1->E; UC6->E; UC8->E;
+  {rank=same; A; C}
+  {rank=same; D; E}
+  A->C [style=invis]; D->E [style=invis];
+}

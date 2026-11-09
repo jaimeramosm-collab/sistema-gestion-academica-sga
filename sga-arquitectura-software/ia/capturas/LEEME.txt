@@ -1,0 +1,6 @@
+Guardar aquí las capturas de Google AI Studio:
+  prompt1.png      (ya incluida)
+  respuesta1.png   (pendiente)
+  prompt2.png      (pendiente)
+  respuesta2.png   (pendiente)
+Antes de subirlas, verificar que no muestren correos, nombres de cuenta ni credenciales.

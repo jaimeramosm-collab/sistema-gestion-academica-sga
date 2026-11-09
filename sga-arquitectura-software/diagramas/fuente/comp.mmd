@@ -1,0 +1,34 @@
+flowchart TB
+    WEB["<b>Interfaz web (SPA)</b><br/>React + TypeScript<br/>Portales por rol"]
+    subgraph BE ["Monolito modular - Backend (Spring Boot, Java 21)"]
+        direction TB
+        API["<b>Capa de presentación</b><br/>Controladores API REST (OpenAPI 3)"]
+        IAM["<b>Identidad y acceso</b><br/>Login, JWT, RBAC"]
+        PER["<b>Gestión de personas</b><br/>Estudiantes y docentes"]
+        EST["<b>Estructura académica</b><br/>Programas, asignaturas, periodos"]
+        GRU["<b>Grupos y horarios</b><br/>Cupos, docentes, aulas"]
+        MAT["<b>Matrícula</b><br/>Reglas, cupos, duplicados"]
+        CAL["<b>Calificaciones</b><br/>Registro y publicación"]
+        REP["<b>Reportes</b><br/>Consultas de solo lectura"]
+        AUD["<b>Auditoría</b><br/>Bitácora de solo inserción"]
+    end
+    DB[("PostgreSQL 16<br/>Un esquema por módulo")]
+    WEB -->|"HTTPS / JSON"| API
+    API --> IAM
+    API --> PER
+    API --> EST
+    API --> GRU
+    API --> MAT
+    API --> CAL
+    API --> REP
+    PER -->|"crea credenciales"| IAM
+    GRU -->|"usa"| EST
+    MAT -->|"consulta grupos"| GRU
+    CAL -->|"consulta matrículas"| MAT
+    REP -.->|"lee"| MAT
+    REP -.->|"lee"| CAL
+    IAM -->|"login y cambios de rol"| AUD
+    MAT -->|"misma transacción"| AUD
+    CAL -->|"misma transacción"| AUD
+    PER -->|"cambios"| AUD
+    BE --> DB

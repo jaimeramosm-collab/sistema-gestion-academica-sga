@@ -1,0 +1,4 @@
+Archivos fuente de los diagramas.
+  .mmd  -> Mermaid  (se pueden abrir y editar en https://mermaid.live)
+  .dot  -> Graphviz (se renderizan con:  dot -Tpng archivo.dot -o salida.png)
+Las imágenes ya generadas están en ../imagenes/

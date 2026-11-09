@@ -1,0 +1,41 @@
+sequenceDiagram
+    autonumber
+    actor Est as Estudiante
+    participant UI as Interfaz web
+    participant API as API REST
+    participant Seg as Módulo IAM
+    participant Mat as Módulo Matrícula
+    participant DB as PostgreSQL
+    Est->>UI: Selecciona un grupo y pulsa Matricular
+    UI->>API: POST /api/v1/enrollments {grupoId} + token JWT
+    API->>Seg: Validar token y rol
+    alt Token inválido o rol sin permiso
+        Seg-->>API: Rechazado
+        API-->>UI: 401 / 403
+    else Acceso autorizado (estudianteId se toma del token)
+        Seg-->>API: Identidad confirmada
+        API->>Mat: matricular(estudianteId, grupoId)
+        Mat->>DB: BEGIN
+        Mat->>DB: SELECT grupo FOR UPDATE (bloqueo de fila)
+        DB-->>Mat: Grupo con cupo_actual y periodo
+        alt Periodo cerrado o sin cupo
+            Mat->>DB: ROLLBACK
+            Mat-->>API: Error de regla de negocio
+            API-->>UI: 422 Unprocessable
+        else Hay cupo y el periodo está abierto
+            Mat->>DB: INSERT matricula
+            alt Violación de índice único (ya matriculado)
+                DB-->>Mat: Error de duplicado
+                Mat->>DB: ROLLBACK
+                API-->>UI: 409 Conflict
+            else Inserción correcta
+                Mat->>DB: UPDATE grupo SET cupo_actual + 1
+                Mat->>DB: INSERT auditoria (misma transacción)
+                Mat->>DB: COMMIT
+                DB-->>Mat: OK
+                Mat-->>API: Matrícula confirmada
+                API-->>UI: 201 Created
+                UI-->>Est: Muestra la matrícula en su horario
+            end
+        end
+    end

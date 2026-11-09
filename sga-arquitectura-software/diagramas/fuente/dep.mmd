@@ -1,0 +1,27 @@
+flowchart LR
+    CLI["Navegadores web<br/>(computador y móvil)"]
+    subgraph DMZ ["DMZ - firewall perimetral"]
+        LB1["Proxy inverso 1 (activo)<br/>Nginx, TLS, límite de peticiones"]
+        LB2["Proxy inverso 2 (pasivo)<br/>IP virtual compartida"]
+    end
+    subgraph APP ["Red de aplicación<br/>(sin acceso desde internet)"]
+        A1["Servidor de aplicación 1<br/>Contenedor SGA"]
+        A2["Servidor de aplicación 2<br/>Contenedor SGA"]
+    end
+    subgraph DAT ["Red de datos<br/>(solo accesible desde la aplicación)"]
+        P["PostgreSQL primario<br/>lectura y escritura"]
+        S["PostgreSQL réplica<br/>solo lectura (reportes)"]
+    end
+    BK["Almacenamiento de respaldos<br/>copias cifradas + archivado de WAL"]
+    CLI -->|"HTTPS 443"| LB1
+    CLI -.->|"si falla el activo"| LB2
+    LB1 -->|"HTTP interno"| A1
+    LB1 -->|"HTTP interno"| A2
+    LB2 -.-> A1
+    LB2 -.-> A2
+    A1 -->|"TLS 5432"| P
+    A2 -->|"TLS 5432"| P
+    A1 -.->|"lectura"| S
+    A2 -.->|"lectura"| S
+    P -->|"replicación en streaming"| S
+    P -->|"respaldo diario + WAL"| BK
